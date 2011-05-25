@@ -1,6 +1,13 @@
 [jQuery Image Preload Plugin][imgpreload]
 =========================
 
-The jQuery imgpreload plugin allows you to preload images before and/or after the DOM is loaded.
+The jQuery imgpreload plugin lets you preload images before and/or after the DOM is loaded.
 
-[imgpreload]: http://farinspace.com/2009/05/jquery-image-preload-plugin/ "jQuery Image Preload Plugin"
+http://farinspace.com/jquery-image-preload-plugin
+
+https://github.com/farinspace/jquery.imgpreload
+
+Licensed under the MIT license
+http://en.wikipedia.org/wiki/MIT_License
+
+[imgpreload]: http://farinspace.com/jquery-image-preload-plugin/ "jQuery Image Preload Plugin"
