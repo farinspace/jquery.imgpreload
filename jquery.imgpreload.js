@@ -2,6 +2,8 @@
 
 Copyright (c) 2009 Dimas Begunoff, http://www.farinspace.com
 
+https://github.com/farinspace/jquery.imgpreload
+
 Licensed under the MIT license
 http://en.wikipedia.org/wiki/MIT_License
 
@@ -28,35 +30,36 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-function imgpreload(imgs,settings)
-{
-	// settings = { each:Function, all:Function }
-	if (settings instanceof Function) { settings = {all:settings}; }
-
-	// use of typeof required
-	// https://developer.mozilla.org/En/Core_JavaScript_1.5_Reference/Operators/Special_Operators/Instanceof_Operator#Description
-	if (typeof imgs == "string") { imgs = [imgs]; }
-
-	var loaded = [];
-	var t = imgs.length;
-	var i = 0;
-
-	for (i; i<t; i++)
-	{
-		var img = new Image();
-		img.onload = function()
-		{
-			loaded.push(this);
-			if (settings.each instanceof Function) { settings.each.call(this); }
-			if (loaded.length>=t && settings.all instanceof Function) { settings.all.call(loaded); }
-		};
-		img.src = imgs[i];
-	}
-}
-
 if (typeof jQuery != "undefined")
 {
 	(function($){
+
+		function imgpreload(imgs,settings)
+		{
+			// settings = { each:Function, all:Function }
+			if (settings instanceof Function) { settings = {all:settings}; }
+
+			// use of typeof required
+			// https://developer.mozilla.org/En/Core_JavaScript_1.5_Reference/Operators/Special_Operators/Instanceof_Operator#Description
+			if (typeof imgs == "string") { imgs = [imgs]; }
+
+			var loaded = [];
+			var t = imgs.length;
+			var i = 0;
+
+			for (i; i<t; i++)
+			{
+				var img = new Image();
+				$(img).bind('load', function()
+				{
+					loaded.push(this);
+					if (settings.each instanceof Function) { settings.each.call(this); }
+					if (loaded.length>=t && settings.all instanceof Function) { settings.all.call(loaded); }
+				});
+
+				img.src = imgs[i];
+			}
+		}
 
 		// extend jquery (because i love jQuery)
 		$.imgpreload = imgpreload;
