@@ -50,8 +50,7 @@ if (typeof jQuery != "undefined")
 			for (i; i<t; i++)
 			{
 				var img = new Image();
-				$(img).bind('load', function()
-				{
+				$(img).bind("load", null, function() {
 					loaded.push(this);
 					if (settings.each instanceof Function) { settings.each.call(this); }
 					if (loaded.length>=t && settings.all instanceof Function) { settings.all.call(loaded); }
