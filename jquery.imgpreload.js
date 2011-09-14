@@ -1,4 +1,3 @@
-/* v1.0 */
 /*
 
 Copyright (c) 2009 Dimas Begunoff, http://www.farinspace.com
@@ -52,9 +51,11 @@ if ('undefined' != typeof jQuery)
 			{
 				var img = new Image();
 
-				$(img).bind('load', function()
+				$(img).bind('load error', function(e)
 				{
 					loaded.push(this);
+
+					$.data(this, 'loaded', ('error'==e.type)?false:true);
 					
 					if (settings.each instanceof Function) { settings.each.call(this); }
 

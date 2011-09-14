@@ -11,6 +11,11 @@
 
 	<script type="text/javascript">
 
+		jQuery(function($)
+		{
+			$('#status, #domstatus').append('<li> dom ready </li>');
+		});
+
 		// cache buster 
 		var t = (new Date).getTime();
 		
@@ -26,7 +31,7 @@
 
 		the_images.push( 'http://farm6.static.flickr.com/5229/5637847279_3acce67b5f_b.jpg?i=5&t=' + t );
 
-		the_images.push( 'http://farm4.static.flickr.com/3064/2656304738_01aa45d6b5_b.jpg?i=6&t=' + t );
+		the_images.push( 'fake-image.jpg?i=6&t=' + t );
 
 		jQuery.imgpreload(the_images,
 		{
@@ -36,17 +41,14 @@
 
 				var m = pattern.exec($(this).attr('src'));
 
-				$('#status').append('<li>' + m[1] + ': ' + $(this).attr('src') + '</li>');
+				var status = $(this).data('loaded')?'success':'error';
+
+				$('#status').append('<li>' + m[1] + ': ' + $(this).attr('src') + ' ' + status + '</li>');
 			},
 			all: function()
 			{
 				$('#status').append('<li> all images loaded </li>');
 			}
-		});
-
-		jQuery(function($)
-		{
-			$('#status, #domstatus').append('<li> dom ready </li>');
 		});
 
 	</script>
@@ -92,7 +94,9 @@
 
 					var m = pattern.exec($(this).attr('src'));
 
-					$('#domstatus').append('<li>' + m[1] + ': ' + $(this).attr('src') + '</li>');
+					var status = $(this).data('loaded')?'success':'error';
+
+					$('#domstatus').append('<li>' + m[1] + ': ' + $(this).attr('src') + ' ' + status +'</li>');
 				},
 				all: function()
 				{
