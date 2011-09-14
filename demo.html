@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+	<title>Demo</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js" type="text/javascript"></script>
+
+	<script src="jquery.imgpreload.min.js" type="text/javascript"></script>
+
+	<script>
+
+		var t = (new Date).getTime();
+		
+		var the_images = [];
+
+		the_images.push( 'http://farm7.static.flickr.com/6195/6130724163_9ec1db80c7_b.jpg?i=1&t=' + t );
+
+		the_images.push( 'http://farm7.static.flickr.com/6188/6131273938_c711a28586_b.jpg?i=2&t=' + t );
+
+		the_images.push( 'http://farm7.static.flickr.com/6065/6125251344_c6f089b09f_b.jpg?i=3&t=' + t );
+
+		the_images.push( 'http://farm5.static.flickr.com/4001/4626549119_6c524ace61_b.jpg?i=4&t=' + t );
+
+		the_images.push( 'http://farm6.static.flickr.com/5229/5637847279_3acce67b5f_b.jpg?i=5&t=' + t );
+
+		the_images.push( 'http://farm4.static.flickr.com/3064/2656304738_01aa45d6b5_b.jpg?i=6&t=' + t );
+
+		jQuery.imgpreload( the_images,
+		{
+			each: function()
+			{
+				var m = $(this).attr('src').match(/(i=(.))/gi);
+
+				$('#status').append('<li>' + m[1] + ' ' + $(this).attr('src') + '</li>');
+			},
+			all: function()
+			{
+				$('#status').append('<li> all images loaded </li>');
+			}
+		});
+
+		jQuery(function($)
+		{
+			$('#status').append('<li> dom ready </li>');
+		});
+
+	</script>
+
+</head>
+<body>
+
+	<h3>Status:</h3>
+
+	<ul id="status"></ul>
+
+</body>
+</html>
