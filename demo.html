@@ -5,12 +5,13 @@
 
 	<title>Demo</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
 
-	<script src="jquery.imgpreload.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="jquery.imgpreload.min.js"></script>
 
-	<script>
+	<script type="text/javascript">
 
+		// cache buster 
 		var t = (new Date).getTime();
 		
 		var the_images = [];
@@ -27,7 +28,7 @@
 
 		the_images.push( 'http://farm4.static.flickr.com/3064/2656304738_01aa45d6b5_b.jpg?i=6&t=' + t );
 
-		jQuery.imgpreload( the_images,
+		jQuery.imgpreload(the_images,
 		{
 			each: function()
 			{
@@ -45,7 +46,7 @@
 
 		jQuery(function($)
 		{
-			$('#status').append('<li> dom ready </li>');
+			$('#status, #domstatus').append('<li> dom ready </li>');
 		});
 
 	</script>
@@ -56,6 +57,51 @@
 	<h3>Status:</h3>
 
 	<ul id="status"></ul>
+
+	<h3>In-dom status:</h3>
+
+	<ul id="domstatus"></ul>
+
+	<div id="images" style="display:none;">
+
+		<script type="text/javascript">
+
+			// cache buster
+			var t = (new Date).getTime();
+
+			for (var i=0; i<6; i++)
+			{
+				the_images[i] = the_images[i].replace(/t=\d*/gi, 't=' + t);
+
+				document.write('<img src="' + the_images[i] + '" alt=""/>');
+			}
+
+		</script>
+
+	</div>
+
+	<script type="text/javascript">
+
+		jQuery(function($)
+		{
+			$('#images img').imgpreload
+			({
+				each: function()
+				{
+					var pattern = new RegExp( "i=(\\d)", "gi" );
+
+					var m = pattern.exec($(this).attr('src'));
+
+					$('#domstatus').append('<li>' + m[1] + ': ' + $(this).attr('src') + '</li>');
+				},
+				all: function()
+				{
+					$('#domstatus').append('<li> all images loaded </li>');
+				}
+			});
+		});
+
+	</script>
 
 </body>
 </html>

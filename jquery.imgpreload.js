@@ -30,58 +30,42 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-if (typeof jQuery != "undefined")
+if ('undefined' != typeof jQuery)
 {
 	(function($){
 
-		function imgpreload(imgs,settings)
+		// extend jquery (because i love jQuery)
+		$.imgpreload = function (imgs,settings)
 		{
-			// settings = { each:Function, all:Function }
-			if (settings instanceof Function) { settings = {all:settings}; }
+			settings = $.extend({},$.fn.imgpreload.defaults,(settings instanceof Function)?{all:settings}:settings);
 
 			// use of typeof required
 			// https://developer.mozilla.org/En/Core_JavaScript_1.5_Reference/Operators/Special_Operators/Instanceof_Operator#Description
-			if (typeof imgs == "string") { imgs = [imgs]; }
+			if ('string' == typeof imgs) { imgs = [imgs]; }
 
 			var loaded = [];
-			var t = imgs.length;
-			var i = 0;
 
-			for (i; i<t; i++)
+			var t = imgs.length;
+
+			for (var i=0; i<t; i++)
 			{
 				var img = new Image();
+
 				$(img).bind('load', function()
 				{
 					loaded.push(this);
+					
 					if (settings.each instanceof Function) { settings.each.call(this); }
+
 					if (loaded.length>=t && settings.all instanceof Function) { settings.all.call(loaded); }
 				});
 
 				img.src = imgs[i];
 			}
-		}
+		};
 
-		// extend jquery (because i love jQuery)
-		$.imgpreload = imgpreload;
-
-		// public
 		$.fn.imgpreload = function(settings)
 		{
-			settings = $.extend({},$.fn.imgpreload.defaults,(settings instanceof Function)?{all:settings}:settings);
-
-			this.each(function()
-			{
-				var elem = this;
-
-				imgpreload($(this).attr('src'),function()
-				{
-					if (settings.each instanceof Function) { settings.each.call(elem); }
-				});
-			});
-
-			// declare urls and loop here (loop a second time) to prevent
-			// pollution of above closure with unnecessary variables
-
 			var urls = [];
 
 			this.each(function()
@@ -89,17 +73,11 @@ if (typeof jQuery != "undefined")
 				urls.push($(this).attr('src'));
 			});
 
-			var selection = this;
-
-			imgpreload(urls,function()
-			{
-				if (settings.all instanceof Function) { settings.all.call(selection); }
-			});
+			$.imgpreload(urls,settings);
 
 			return this;
 		};
 
-		// public
 		$.fn.imgpreload.defaults =
 		{
 			each: null // callback invoked when each image in a group loads
@@ -115,7 +93,7 @@ if (typeof jQuery != "undefined")
 
 	$('#content img').imgpreload(function()
 	{
-		// this = jQuery image object selection
+		// this = array of dom image objects
 		// callback executes when all images are loaded
 	});
 
@@ -128,20 +106,20 @@ if (typeof jQuery != "undefined")
 		},
 		all: function()
 		{
-			// this = jQuery image object selection
+			// this = array of dom image objects
 			// callback executes when all images are loaded
 		}
 	});
 
 	$.imgpreload('/images/a.gif',function()
 	{
-		// this = new image object
+		// this = dom image object
 		// callback
 	});
 
 	$.imgpreload(['/images/a.gif','/images/b.gif'],function()
 	{
-		// this = array of new image objects
+		// this = array of dom image objects
 		// callback executes when all images are loaded
 	});
 
@@ -149,12 +127,12 @@ if (typeof jQuery != "undefined")
 	{
 		each: function()
 		{
-			// this = new image object
+			// this = dom image object
 			// callback executes on every image load
 		},
 		all: function()
 		{
-			// this = array of new image objects
+			// this = array of dom image objects
 			// callback executes when all images are loaded
 		}
 	});
