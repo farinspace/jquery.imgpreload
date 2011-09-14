@@ -31,9 +31,11 @@
 		{
 			each: function()
 			{
-				var m = $(this).attr('src').match(/(i=(.))/gi);
+				var pattern = new RegExp( "i=(\\d)", "gi" );
 
-				$('#status').append('<li>' + m[1] + ' ' + $(this).attr('src') + '</li>');
+				var m = pattern.exec($(this).attr('src'));
+
+				$('#status').append('<li>' + m[1] + ': ' + $(this).attr('src') + '</li>');
 			},
 			all: function()
 			{
