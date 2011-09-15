@@ -1,3 +1,4 @@
+/* v1.2 */
 /*
 
 Copyright (c) 2009 Dimas Begunoff, http://www.farinspace.com
@@ -104,24 +105,28 @@ if ('undefined' != typeof jQuery)
 		each: function()
 		{
 			// this = dom image object
+			// check for success with: $(this).data('loaded')
 			// callback executes when each image loads
 		},
 		all: function()
 		{
 			// this = array of dom image objects
+			// check for success with: $(this[i]).data('loaded')
 			// callback executes when all images are loaded
 		}
 	});
 
 	$.imgpreload('/images/a.gif',function()
 	{
-		// this = dom image object
+		// this = array of dom image objects
+		// check for success with: $(this[i]).data('loaded')
 		// callback
 	});
 
 	$.imgpreload(['/images/a.gif','/images/b.gif'],function()
 	{
 		// this = array of dom image objects
+		// check for success with: $(this[i]).data('loaded')
 		// callback executes when all images are loaded
 	});
 
@@ -130,11 +135,13 @@ if ('undefined' != typeof jQuery)
 		each: function()
 		{
 			// this = dom image object
+			// check for success with: $(this).data('loaded')
 			// callback executes on every image load
 		},
 		all: function()
 		{
 			// this = array of dom image objects
+			// check for success with: $(this[i]).data('loaded')
 			// callback executes when all images are loaded
 		}
 	});

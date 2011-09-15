@@ -71,7 +71,9 @@
 			// cache buster
 			var t = (new Date).getTime();
 
-			for (var i=0; i<6; i++)
+			var icnt = the_images.length;
+
+			for (var i=0; i<icnt; i++)
 			{
 				the_images[i] = the_images[i].replace(/t=\d*/gi, 't=' + t);
 

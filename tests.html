@@ -1,0 +1,425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+	<title>Tests</title>
+
+	<link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+
+	<script type="text/javascript" src="jquery.imgpreload.min.js"></script>
+
+	<script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+
+	<script type="text/javascript">
+
+		// cache buster 
+		var t = (new Date).getTime();
+		
+		var the_images = [];
+
+		the_images.push( 'http://farm7.static.flickr.com/6195/6130724163_9ec1db80c7_b.jpg?i=1&t=' + t );
+
+		the_images.push( 'http://farm7.static.flickr.com/6188/6131273938_c711a28586_b.jpg?i=2&t=' + t );
+
+		the_images.push( 'fake-image.jpg?i=6&t=' + t );
+
+		jQuery(function($)
+		{
+			function all_callback()
+			{
+				ok( true, 'all callback called' );
+
+				ok( '[object Array]' === Object.prototype.toString.apply(this), 'is array' );
+
+				equal( this.length, 3, 'number of all loaded images' );
+
+				var cnt = 0;
+
+				$.each(this, function(i,elem)
+				{
+					if( $(elem).data('loaded') )
+					{
+						cnt++;
+					}
+				});
+
+				equal( cnt, 2, 'number of successfully loaded images' );
+
+				cnt = 0;
+
+				$.each(this, function(i,elem)
+				{
+					if( ! $(elem).data('loaded') )
+					{
+						cnt++;
+					}
+				});
+
+				equal( cnt, 1, 'number of unsuccessfully loaded images' );
+
+				start();
+			};
+
+			function all_callback_single()
+			{
+				ok( true, 'all callback called' );
+
+				ok( '[object Array]' === Object.prototype.toString.apply(this), 'is array' );
+
+				equal( this.length, 1, 'number of all loaded images' );
+
+				var cnt = 0;
+
+				$.each(this, function(i,elem)
+				{
+					if( $(elem).data('loaded') )
+					{
+						cnt++;
+					}
+				});
+
+				equal( cnt, 1, 'number of successfully loaded images' );
+
+				cnt = 0;
+
+				$.each(this, function(i,elem)
+				{
+					if( ! $(elem).data('loaded') )
+					{
+						cnt++;
+					}
+				});
+
+				equal( cnt, 0, 'number of unsuccessfully loaded images' );
+
+				start();
+			};
+
+			function all_callback_single_error()
+			{
+				ok( true, 'all callback called' );
+
+				ok( '[object Array]' === Object.prototype.toString.apply(this), 'is array' );
+
+				equal( this.length, 1, 'number of all loaded images' );
+
+				var cnt = 0;
+
+				$.each(this, function(i,elem)
+				{
+					if( $(elem).data('loaded') )
+					{
+						cnt++;
+					}
+				});
+
+				equal( cnt, 0, 'number of successfully loaded images' );
+
+				cnt = 0;
+
+				$.each(this, function(i,elem)
+				{
+					if( ! $(elem).data('loaded') )
+					{
+						cnt++;
+					}
+				});
+
+				equal( cnt, 1, 'number of unsuccessfully loaded images' );
+
+				start();
+			};
+
+			var each_cnt = 0;
+
+			function each_callback()
+			{
+				ok( true, 'each callback called' );
+
+				ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
+
+				notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
+
+				if ( ++each_cnt >= the_images.length )
+				{
+					start();
+				}
+			};
+
+			function each_callback_single()
+			{
+				ok( true, 'each callback called' );
+
+				ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
+
+				notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
+
+				start();
+			};
+
+			function reset_image_urls()
+			{
+				// cache buster
+				var t = (new Date).getTime();
+
+				var icnt = the_images.length;
+
+				for (var i=0; i<icnt; i++)
+				{
+					the_images[i] = the_images[i].replace(/t=\d*/gi, 't=' + t);
+				}
+			}
+
+			function reset_dom_images()
+			{
+				$('#images').empty();
+
+				var icnt = the_images.length;
+
+				for (var i=0; i<icnt; i++)
+				{
+					$('#images').append( '<img src="' + the_images[i] + '" alt=""/>' );
+				}
+			}
+
+			asyncTest('preload image array - default callback (all)', function()
+			{
+				reset_image_urls();
+
+				$.imgpreload( the_images, all_callback );
+			});
+
+			asyncTest('preload image array - { all: callback }', function()
+			{
+				reset_image_urls();
+
+				$.imgpreload( the_images, { all: all_callback } );
+			});
+
+			asyncTest('preload image array - { each: callback }', function()
+			{
+				reset_image_urls();
+
+				each_cnt = 0;
+
+				$.imgpreload( the_images, { each: each_callback } );
+			});
+
+			asyncTest('preload image array - { all: callback, each: callback }', function()
+			{
+				reset_image_urls();
+
+				each_cnt = 0;
+
+				$.imgpreload( the_images, { all: all_callback, each: each_callback } );
+			});
+
+			asyncTest('preload image single url - default callback (all)', function()
+			{
+				reset_image_urls();
+
+				$.imgpreload( the_images[0], all_callback_single );
+			});
+
+			asyncTest('preload image single url - { all: callback }', function()
+			{
+				reset_image_urls();
+
+				$.imgpreload( the_images[0], { all: all_callback_single } );
+			});
+
+			asyncTest('preload image single url - { each: callback }', function()
+			{
+				reset_image_urls();
+
+				each_cnt = 0;
+
+				$.imgpreload( the_images[0], { each: each_callback_single } );
+			});
+
+			asyncTest('preload image single url - { all: callback, each: callback }', function()
+			{
+				reset_image_urls();
+
+				each_cnt = 0;
+
+				$.imgpreload( the_images[0], { all: all_callback_single, each: each_callback_single } );
+			});
+
+			asyncTest('preload image single url (error) - default callback (all)', function()
+			{
+				reset_image_urls();
+
+				$.imgpreload( the_images[2], all_callback_single_error );
+			});
+
+			asyncTest('preload image single url (error) - { all: callback }', function()
+			{
+				reset_image_urls();
+
+				$.imgpreload( the_images[2], { all: all_callback_single_error } );
+			});
+
+			asyncTest('preload image single url (error) - { each: callback }', function()
+			{
+				reset_image_urls();
+
+				each_cnt = 0;
+
+				$.imgpreload( the_images[2], { each: each_callback_single } );
+			});
+
+			asyncTest('preload image single url (error) - { all: callback, each: callback }', function()
+			{
+				reset_image_urls();
+
+				each_cnt = 0;
+
+				$.imgpreload( the_images[2], { all: all_callback_single_error, each: each_callback_single } );
+			});
+
+			asyncTest('preload image elements - default callback (all)', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img').imgpreload( all_callback );
+			});
+
+			asyncTest('preload image elements - { all: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img').imgpreload( { all: all_callback } );
+			});
+
+			asyncTest('preload image elements - { each: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				each_cnt = 0;
+
+				$('#images img').imgpreload( { each: each_callback } );
+			});
+
+			asyncTest('preload image elements - { all: callback, each: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				each_cnt = 0;
+
+				$('#images img').imgpreload( { all: all_callback, each: each_callback } );
+			});
+
+			asyncTest('preload image single element - default callback (all)', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img:eq(0)').imgpreload( all_callback_single );
+			});
+
+			asyncTest('preload image single element - { all: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img:eq(0)').imgpreload( { all: all_callback_single } );
+			});
+
+			asyncTest('preload image single element - { each: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				each_cnt = 0;
+
+				$('#images img:eq(0)').imgpreload( { each: each_callback_single } );
+			});
+
+			asyncTest('preload image single element - { all: callback, each: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				each_cnt = 0;
+
+				$('#images img:eq(0)').imgpreload( { all: all_callback_single, each: each_callback_single } );
+			});
+
+			asyncTest('preload image single element (error) - default callback (all)', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img:eq(2)').imgpreload( all_callback_single_error );
+			});
+
+			asyncTest('preload image single element (error) - { all: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img:eq(2)').imgpreload( { all: all_callback_single_error } );
+			});
+
+			asyncTest('preload image single element (error) - { each: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				each_cnt = 0;
+
+				$('#images img:eq(2)').imgpreload( { each: each_callback_single } );
+			});
+
+			asyncTest('preload image single element (error) - { all: callback, each: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				each_cnt = 0;
+
+				$('#images img:eq(2)').imgpreload( { all: all_callback_single_error, each: each_callback_single } );
+			});
+		});
+
+	</script>
+
+</head>
+<body>
+
+	<h1 id="qunit-header">jquery.imgpreload</h1>
+
+	<h2 id="qunit-banner"></h2>
+
+	<div id="qunit-testrunner-toolbar"></div>
+
+	<h2 id="qunit-userAgent"></h2>
+
+	<ol id="qunit-tests"></ol>
+
+	<div id="qunit-fixture"></div>
+
+	<div id="images" style="display:none;"></div>
+
+</body>
+</html>
