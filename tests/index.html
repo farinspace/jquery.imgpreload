@@ -5,13 +5,13 @@
 
 	<title>Tests</title>
 
-	<link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen" />
 
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
 
 	<script type="text/javascript" src="jquery.imgpreload.min.js"></script>
 
-	<script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+	<script type="text/javascript" src="qunit/qunit/qunit.js"></script>
 
 	<script type="text/javascript">
 
@@ -139,7 +139,8 @@
 			{
 				ok( true, 'each callback called' );
 
-				ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
+				//ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
+				ok( 'IMG' === this.nodeName, 'is image' );
 
 				notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
 
@@ -153,7 +154,8 @@
 			{
 				ok( true, 'each callback called' );
 
-				ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
+				//ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
+				ok( 'IMG' === this.nodeName, 'is image' );
 
 				notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
 
