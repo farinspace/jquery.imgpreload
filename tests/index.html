@@ -402,6 +402,58 @@
 
 				$('#images img:eq(2)').imgpreload( { all: all_callback_single_error, each: each_callback_single } );
 			});
+
+			asyncTest('test return img object', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img:eq(0)').imgpreload
+				({
+					each: function()
+					{
+						$(this).addClass('img-loaded');
+
+						start();
+					}, 
+					all: function()
+					{
+						ok( $('#images img:eq(0)').hasClass('img-loaded'), 'has "img-loaded" class' );
+
+						start();
+					}
+				});
+			});
+
+			asyncTest('test callback firing order', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				var firing_order = null;
+
+				$('#images img:eq(0)').imgpreload
+				({
+					each: function()
+					{
+						ok( firing_order != 'all', '"each" callback called before "all" callback' );
+						
+						firing_order = 'each';
+
+						start();
+					}, 
+					all: function()
+					{
+						ok( firing_order == 'each', '"all" callback called after "each" callback' );
+						
+						firing_order = 'all';
+						
+						start();
+					}
+				});
+			});
 		});
 
 	</script>

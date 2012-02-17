@@ -18,7 +18,7 @@
 
 		// cache buster 
 		var t = (new Date).getTime();
-		
+
 		var the_images = [];
 
 		the_images.push( 'http://farm7.static.flickr.com/6195/6130724163_9ec1db80c7_b.jpg?i=1&t=' + t );
@@ -99,6 +99,8 @@
 					var status = $(this).data('loaded')?'success':'error';
 
 					$('#domstatus').append('<li>' + m[1] + ': ' + $(this).attr('src') + ' ' + status +'</li>');
+
+					$(this).addClass('image-loaded');
 				},
 				all: function()
 				{

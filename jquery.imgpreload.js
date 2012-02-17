@@ -1,4 +1,4 @@
-/* v1.2 */
+/* v1.3 */
 /*
 
 Copyright (c) 2009 Dimas Begunoff, http://www.farinspace.com
@@ -42,41 +42,44 @@ if ('undefined' != typeof jQuery)
 
 			// use of typeof required
 			// https://developer.mozilla.org/En/Core_JavaScript_1.5_Reference/Operators/Special_Operators/Instanceof_Operator#Description
-			if ('string' == typeof imgs) { imgs = [imgs]; }
+			if ('string' == typeof imgs) { imgs = new Array(imgs); }
 
-			var loaded = [];
+			var loaded = new Array();
 
-			var t = imgs.length;
-
-			for (var i=0; i<t; i++)
+			$.each(imgs,function(i,elem)
 			{
 				var img = new Image();
 
+				var url = elem;
+
+				var img_obj = img;
+
+				if ('string' != typeof elem)
+				{
+					url = $(elem).attr('src');
+
+					img_obj = elem;
+				}
+
 				$(img).bind('load error', function(e)
 				{
-					loaded.push(this);
+					loaded.push(img_obj);
 
-					$.data(this, 'loaded', ('error'==e.type)?false:true);
+					$.data(img_obj, 'loaded', ('error'==e.type)?false:true);
 					
-					if (settings.each instanceof Function) { settings.each.call(this); }
+					if (settings.each instanceof Function) { settings.each.call(img_obj); }
 
-					if (loaded.length>=t && settings.all instanceof Function) { settings.all.call(loaded); }
+					// http://jsperf.com/length-in-a-variable
+					if (loaded.length>=imgs.length && settings.all instanceof Function) { settings.all.call(loaded); }
 				});
 
-				img.src = imgs[i];
-			}
+				img.src = url;
+			});
 		};
 
 		$.fn.imgpreload = function(settings)
 		{
-			var urls = [];
-
-			this.each(function()
-			{
-				urls.push($(this).attr('src'));
-			});
-
-			$.imgpreload(urls,settings);
+			$.imgpreload(this,settings);
 
 			return this;
 		};
