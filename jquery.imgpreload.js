@@ -1,4 +1,4 @@
-/* v1.3 */
+/* v1.4 */
 /*
 
 Copyright (c) 2009 Dimas Begunoff, http://www.farinspace.com
