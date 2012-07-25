@@ -71,6 +71,8 @@ if ('undefined' != typeof jQuery)
 
 					// http://jsperf.com/length-in-a-variable
 					if (loaded.length>=imgs.length && settings.all instanceof Function) { settings.all.call(loaded); }
+
+					$(this).unbind('load error');
 				});
 
 				img.src = url;
