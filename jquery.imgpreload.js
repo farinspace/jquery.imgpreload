@@ -56,7 +56,7 @@ if ('undefined' != typeof jQuery)
 
 				if ('string' != typeof elem)
 				{
-					url = $(elem).attr('src');
+					url = $(elem).attr('src') || $(elem).css('background-image').replace(/url\(|\)/mg, "");
 
 					img_obj = elem;
 				}
