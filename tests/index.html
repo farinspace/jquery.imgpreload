@@ -402,6 +402,45 @@
 
 				$('#images img:eq(2)').imgpreload( { all: all_callback_single_error, each: each_callback_single } );
 			});
+			
+			function reset_dom_divs()
+			{
+				$('#background-images').empty();
+
+				var icnt = the_images.length;
+
+				for (var i=0; i<icnt; i++)
+				{
+					$('#background-images').append( '<div style="background-image:url(' + the_images[i] + ')"></div>' );
+				}
+			}      
+			
+			            
+			asyncTest('preload background image elements - { all: callback, each: callback }', function()
+			{
+				reset_image_urls();
+
+				reset_dom_divs();
+
+				each_cnt = 0;
+
+				$('#background-images div').imgpreload( { 
+					all: all_callback
+					, each: function(){
+						ok( true, 'each callback called' );
+	
+						ok( 'DIV' === this.nodeName, 'is div' );
+		
+						notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
+		
+						if ( ++each_cnt >= the_images.length )
+						{
+							start();
+						}
+					} 
+				});
+			});
+
 
 			asyncTest('test return img object', function()
 			{
@@ -474,6 +513,7 @@
 	<div id="qunit-fixture"></div>
 
 	<div id="images" style="display:none;"></div>
+	<div id="background-images" style="display:none;"></div>
 
 </body>
 </html>
