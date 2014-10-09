@@ -194,6 +194,15 @@
 				$.imgpreload( the_images, all_callback );
 			});
 
+			asyncTest('preload image array - promise resolved', function()
+			{
+				reset_image_urls();
+
+				$.imgpreload( the_images ).then(function(images) {
+					all_callback.call(images);
+				});
+			});
+
 			asyncTest('preload image array - { all: callback }', function()
 			{
 				reset_image_urls();
