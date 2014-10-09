@@ -38,6 +38,7 @@ if ('undefined' != typeof jQuery)
 		// extend jquery (because i love jQuery)
 		$.imgpreload = function (imgs,settings)
 		{
+			var deferred = $.Deferred();
 			settings = $.extend({},$.fn.imgpreload.defaults,(settings instanceof Function)?{all:settings}:settings);
 
 			// use of typeof required
@@ -67,16 +68,29 @@ if ('undefined' != typeof jQuery)
 
 					$.data(img_obj, 'loaded', ('error'==e.type)?false:true);
 					
-					if (settings.each instanceof Function) { settings.each.call(img_obj); }
+					if (settings.each instanceof Function) { 
+						settings.each.call(img_obj); 
+					}
+
+					if (deferred.notifyWith instanceof Function) { // support for jQuery < 1.7
+						deferred.notify(img_obj);
+					}
 
 					// http://jsperf.com/length-in-a-variable
-					if (loaded.length>=imgs.length && settings.all instanceof Function) { settings.all.call(loaded); }
+					if (loaded.length>=imgs.length) {
+						if (settings.all instanceof Function) {
+							settings.all.call(loaded); 
+						}
+						deferred.resolve(loaded);
+					}
 
 					$(this).unbind('load error');
 				});
 
 				img.src = url;
 			});
+			
+			return deferred.promise();
 		};
 
 		$.fn.imgpreload = function(settings)
