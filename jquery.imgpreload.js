@@ -70,7 +70,7 @@ if ('undefined' != typeof jQuery)
 					$.data(img_obj, 'loaded', ('error' == e.type) ? false : true);
 
 					if (settings.each instanceof Function) {
-						var percentage = (index * 100 / imgs.length).toFixed(2);
+						var percentage = ((index + 1) * 100 / imgs.length).toFixed(2);
 
 						settings.each.call(img_obj, percentage, index);
 
