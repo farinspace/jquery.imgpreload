@@ -36,9 +36,9 @@ if ('undefined' != typeof jQuery)
 	(function($){
 
 		// extend jquery (because i love jQuery)
-		$.imgpreload = function (imgs,settings)
+		$.imgpreload = function (imgs, settings)
 		{
-			settings = $.extend({},$.fn.imgpreload.defaults,(settings instanceof Function)?{all:settings}:settings);
+			settings = $.extend({}, $.fn.imgpreload.defaults, (settings instanceof Function) ? {all:settings} : settings);
 
 			// use of typeof required
 			// https://developer.mozilla.org/En/Core_JavaScript_1.5_Reference/Operators/Special_Operators/Instanceof_Operator#Description
@@ -46,7 +46,9 @@ if ('undefined' != typeof jQuery)
 
 			var loaded = new Array();
 
-			$.each(imgs,function(i,elem)
+			var index = 0;
+
+			$.each(imgs,function(i, elem)
 			{
 				var img = new Image();
 
@@ -56,7 +58,7 @@ if ('undefined' != typeof jQuery)
 
 				if ('string' != typeof elem)
 				{
-					url = $(elem).attr('src') || $(elem).css('background-image').replace(/^url\((?:"|')?(.*)(?:'|")?\)$/mg, "$1");
+					url = $(elem).attr('src') || $(elem).css('background-image').replace(/^url\((?:"|')?(.*)(?:'|")?\)$/mg, '$1');
 
 					img_obj = elem;
 				}
@@ -65,9 +67,15 @@ if ('undefined' != typeof jQuery)
 				{
 					loaded.push(img_obj);
 
-					$.data(img_obj, 'loaded', ('error'==e.type)?false:true);
-					
-					if (settings.each instanceof Function) { settings.each.call(img_obj); }
+					$.data(img_obj, 'loaded', ('error' == e.type) ? false : true);
+
+					if (settings.each instanceof Function) {
+						var percentage = (index * 100 / imgs.length).toFixed(2);
+
+						settings.each.call(img_obj, percentage, index);
+
+						index++;
+					}
 
 					// http://jsperf.com/length-in-a-variable
 					if (loaded.length>=imgs.length && settings.all instanceof Function) { settings.all.call(loaded); }
