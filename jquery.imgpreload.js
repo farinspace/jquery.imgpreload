@@ -1,5 +1,5 @@
 /**
-* jquery.imgpreload 1.6.1 <https://github.com/farinspace/jquery.imgpreload>
+* jquery.imgpreload 1.6.2 <https://github.com/farinspace/jquery.imgpreload>
 * Copyright 2009-2014 Dimas Begunoff <http://farinspace.com>
 * License MIT <http://opensource.org/licenses/MIT>
 */
@@ -40,7 +40,8 @@ if ('undefined' != typeof jQuery)
 
 					$.data(img_obj, 'loaded', ('error'==e.type)?false:true);
 
-					if (settings.each instanceof Function) { settings.each.call(img_obj, loaded.slice()); }
+					// http://msdn.microsoft.com/en-us/library/ie/tkcsy6fe(v=vs.94).aspx
+					if (settings.each instanceof Function) { settings.each.call(img_obj, loaded.slice(0)); }
 
 					// http://jsperf.com/length-in-a-variable
 					if (loaded.length>=imgs.length && settings.all instanceof Function) { settings.all.call(loaded); }

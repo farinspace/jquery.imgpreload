@@ -1,6 +1,6 @@
 {
   "name": "jquery.imgpreload",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "license": "MIT",
   "licenses": [
     {
@@ -19,6 +19,8 @@
     "url": "https://github.com/farinspace/jquery.imgpreload.git"
   },
   "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-concat": "^0.5.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.5.1",
