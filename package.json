@@ -1,0 +1,30 @@
+{
+  "name": "jquery.imgpreload",
+  "version": "1.6.0",
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "homepage": "https://github.com/farinspace/jquery.imgpreload",
+  "author": {
+    "name": "Dimas Begunoff",
+    "email": "dbegunoff@gmail.com",
+    "url": "http://farinspace.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farinspace/jquery.imgpreload.git"
+  },
+  "devDependencies": {
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.5.1",
+    "load-grunt-tasks": "^0.6.0"
+  },
+  "scripts": {
+    "postinstall": "grunt build"
+  }
+}
