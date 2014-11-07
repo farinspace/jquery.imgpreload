@@ -493,6 +493,24 @@
 					}
 				});
 			});
+
+			asyncTest('each callback with "loaded" arg', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				each_cnt = 0;
+
+				$('#images img').imgpreload({
+					each: function( loaded ){
+						equal( loaded.length, ++each_cnt, 'number of images loaded' );
+						if ( each_cnt >= the_images.length ) {
+							start();
+						}
+					}
+				});
+			});
 		});
 
 	</script>
