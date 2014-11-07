@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -9,15 +9,15 @@
 
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
 
-	<script type="text/javascript" src="../jquery.imgpreload.min.js"></script>
+	<script type="text/javascript" src="../dist/jquery.imgpreload.min.js"></script>
 
 	<script type="text/javascript" src="qunit/qunit/qunit.js"></script>
 
 	<script type="text/javascript">
 
-		// cache buster 
+		// cache buster
 		var t = (new Date).getTime();
-		
+
 		var the_images = [];
 
 		the_images.push( 'http://farm7.static.flickr.com/6195/6130724163_9ec1db80c7_b.jpg?i=1&t=' + t );
@@ -402,7 +402,7 @@
 
 				$('#images img:eq(2)').imgpreload( { all: all_callback_single_error, each: each_callback_single } );
 			});
-			
+
 			function reset_dom_divs()
 			{
 				$('#background-images').empty();
@@ -413,9 +413,9 @@
 				{
 					$('#background-images').append( '<div style="background-image:url(' + the_images[i] + ')"></div>' );
 				}
-			}      
-			
-			            
+			}
+
+
 			asyncTest('preload background image elements - { all: callback, each: callback }', function()
 			{
 				reset_image_urls();
@@ -424,23 +424,53 @@
 
 				each_cnt = 0;
 
-				$('#background-images div').imgpreload( { 
+				$('#background-images div').imgpreload( {
 					all: all_callback
 					, each: function(){
 						ok( true, 'each callback called' );
-	
+
 						ok( 'DIV' === this.nodeName, 'is div' );
-		
+
 						notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
-		
+
 						if ( ++each_cnt >= the_images.length )
 						{
 							start();
 						}
-					} 
+					}
 				});
 			});
 
+			asyncTest('callback firing order', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				var firing_order = null;
+
+				$('#images img:eq(0)').imgpreload
+				({
+					each: function()
+					{
+						ok( null == firing_order, 'firing_order == null' );
+
+						ok( firing_order != 'all', 'each callback called before all callback' );
+
+						firing_order = 'each';
+
+						start();
+					},
+					all: function()
+					{
+						ok( firing_order == 'each', 'all callback called after each callback' );
+
+						firing_order = 'all';
+
+						start();
+					}
+				});
+			});
 
 			asyncTest('test return img object', function()
 			{
@@ -455,7 +485,7 @@
 						$(this).addClass('img-loaded');
 
 						start();
-					}, 
+					},
 					all: function()
 					{
 						ok( $('#images img:eq(0)').hasClass('img-loaded'), 'has "img-loaded" class' );
@@ -465,30 +495,33 @@
 				});
 			});
 
-			asyncTest('test callback firing order', function()
+			asyncTest('each callback with "loaded" arg', function()
 			{
 				reset_image_urls();
 
 				reset_dom_images();
 
-				var firing_order = null;
+				each_cnt = 0;
 
-				$('#images img:eq(0)').imgpreload
-				({
-					each: function()
-					{
-						ok( firing_order != 'all', '"each" callback called before "all" callback' );
-						
-						firing_order = 'each';
+				$('#images img').imgpreload({
+					each: function( loaded ){
+						equal( loaded.length, ++each_cnt, 'number of images loaded' );
+						if ( each_cnt >= the_images.length ) {
+							start();
+						}
+					}
+				});
+			});
 
-						start();
-					}, 
-					all: function()
-					{
-						ok( firing_order == 'each', '"all" callback called after "each" callback' );
-						
-						firing_order = 'all';
-						
+			asyncTest('each callback with bad image url', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img:eq(2)').imgpreload({
+					each: function(){
+						equal( $(this).data('loaded'), false, 'loaded == false' );
 						start();
 					}
 				});
