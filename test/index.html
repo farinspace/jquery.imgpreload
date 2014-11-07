@@ -441,6 +441,36 @@
 				});
 			});
 
+			asyncTest('callback firing order', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				var firing_order = null;
+
+				$('#images img:eq(0)').imgpreload
+				({
+					each: function()
+					{
+						ok( null == firing_order, 'firing_order == null' );
+
+						ok( firing_order != 'all', 'each callback called before all callback' );
+
+						firing_order = 'each';
+
+						start();
+					},
+					all: function()
+					{
+						ok( firing_order == 'each', 'all callback called after each callback' );
+
+						firing_order = 'all';
+
+						start();
+					}
+				});
+			});
 
 			asyncTest('test return img object', function()
 			{
@@ -465,35 +495,6 @@
 				});
 			});
 
-			asyncTest('test callback firing order', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				var firing_order = null;
-
-				$('#images img:eq(0)').imgpreload
-				({
-					each: function()
-					{
-						ok( firing_order != 'all', '"each" callback called before "all" callback' );
-
-						firing_order = 'each';
-
-						start();
-					},
-					all: function()
-					{
-						ok( firing_order == 'each', '"all" callback called after "each" callback' );
-
-						firing_order = 'all';
-
-						start();
-					}
-				});
-			});
-
 			asyncTest('each callback with "loaded" arg', function()
 			{
 				reset_image_urls();
@@ -508,6 +509,20 @@
 						if ( each_cnt >= the_images.length ) {
 							start();
 						}
+					}
+				});
+			});
+
+			asyncTest('each callback with bad image url', function()
+			{
+				reset_image_urls();
+
+				reset_dom_images();
+
+				$('#images img:eq(2)').imgpreload({
+					each: function(){
+						equal( $(this).data('loaded'), false, 'loaded == false' );
+						start();
 					}
 				});
 			});
