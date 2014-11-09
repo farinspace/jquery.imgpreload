@@ -51,7 +51,42 @@ module.exports = function(grunt) {
 			}
 		}
 	});
+	// test
+	grunt.config.merge({
+		connect: {
+			server: {
+				options: {
+					base: "",
+					port: 9999
+				}
+			}
+		},
+		'saucelabs-qunit': {
+			all: {
+				options: {
+					urls: ["http://127.0.0.1:9999/test/index.html"],
+					tunnelTimeout: 5,
+					build: process.env.TRAVIS_JOB_ID,
+					concurrency: 3,
+					browsers: [
+						{
+							browserName: "firefox",
+							version: "19",
+							platform: "XP"
+						},
+						{
+							browserName: "chrome",
+							platform: "XP"
+						}
+					],
+					testname: "qunit tests",
+					tags: ["master"]
+				}
+			}
+		}
+	});
 	// tasks
+	grunt.registerTask("test", ["connect", "saucelabs-qunit"]);
 	grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
 	grunt.registerTask('default', ['watch']);
 };
