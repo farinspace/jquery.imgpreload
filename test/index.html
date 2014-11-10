@@ -1,552 +1,219 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-
-	<title>Tests</title>
-
+	<meta charset="utf-8">
+	<title>Test</title>
 	<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen" />
-
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
-
-	<script type="text/javascript" src="../dist/jquery.imgpreload.min.js"></script>
-
 	<script type="text/javascript" src="qunit/qunit/qunit.js"></script>
-
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+	<script type="text/javascript" src="../dist/jquery.imgpreload.min.js"></script>
 	<script type="text/javascript">
-
-		// cache buster
-		var t = (new Date).getTime();
-
-		var the_images = [];
-
-		the_images.push( 'http://farm7.static.flickr.com/6195/6130724163_9ec1db80c7_b.jpg?i=1&t=' + t );
-
-		the_images.push( 'http://farm7.static.flickr.com/6188/6131273938_c711a28586_b.jpg?i=2&t=' + t );
-
-		the_images.push( 'fake-image.jpg?i=6&t=' + t );
-
 		jQuery(function($)
 		{
-			function all_callback()
-			{
-				ok( true, 'all callback called' );
+			// cache buster
+			var t = (new Date).getTime();
+			var the_images = [];
+			the_images.push( 'http://farm7.static.flickr.com/6195/6130724163_9ec1db80c7_b.jpg?i=1&t=' + t );
+			the_images.push( 'fake-image.jpg?i=6&t=' + t );
 
-				ok( '[object Array]' === Object.prototype.toString.apply(this), 'is array' );
+			var fixture_el = $('#qunit-fixture');
 
-				equal( this.length, 3, 'number of all loaded images' );
-
-				var cnt = 0;
-
-				$.each(this, function(i,elem)
-				{
-					if( $(elem).data('loaded') )
-					{
-						cnt++;
-					}
-				});
-
-				equal( cnt, 2, 'number of successfully loaded images' );
-
-				cnt = 0;
-
-				$.each(this, function(i,elem)
-				{
-					if( ! $(elem).data('loaded') )
-					{
-						cnt++;
-					}
-				});
-
-				equal( cnt, 1, 'number of unsuccessfully loaded images' );
-
-				start();
-			};
-
-			function all_callback_single()
-			{
-				ok( true, 'all callback called' );
-
-				ok( '[object Array]' === Object.prototype.toString.apply(this), 'is array' );
-
-				equal( this.length, 1, 'number of all loaded images' );
-
-				var cnt = 0;
-
-				$.each(this, function(i,elem)
-				{
-					if( $(elem).data('loaded') )
-					{
-						cnt++;
-					}
-				});
-
-				equal( cnt, 1, 'number of successfully loaded images' );
-
-				cnt = 0;
-
-				$.each(this, function(i,elem)
-				{
-					if( ! $(elem).data('loaded') )
-					{
-						cnt++;
-					}
-				});
-
-				equal( cnt, 0, 'number of unsuccessfully loaded images' );
-
-				start();
-			};
-
-			function all_callback_single_error()
-			{
-				ok( true, 'all callback called' );
-
-				ok( '[object Array]' === Object.prototype.toString.apply(this), 'is array' );
-
-				equal( this.length, 1, 'number of all loaded images' );
-
-				var cnt = 0;
-
-				$.each(this, function(i,elem)
-				{
-					if( $(elem).data('loaded') )
-					{
-						cnt++;
-					}
-				});
-
-				equal( cnt, 0, 'number of successfully loaded images' );
-
-				cnt = 0;
-
-				$.each(this, function(i,elem)
-				{
-					if( ! $(elem).data('loaded') )
-					{
-						cnt++;
-					}
-				});
-
-				equal( cnt, 1, 'number of unsuccessfully loaded images' );
-
-				start();
-			};
-
-			var each_cnt = 0;
-
-			function each_callback()
-			{
-				ok( true, 'each callback called' );
-
-				//ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
-				ok( 'IMG' === this.nodeName, 'is image' );
-
-				notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
-
-				if ( ++each_cnt >= the_images.length )
-				{
-					start();
-				}
-			};
-
-			function each_callback_single()
-			{
-				ok( true, 'each callback called' );
-
-				//ok( '[object HTMLImageElement]' === Object.prototype.toString.apply(this), 'is image' );
-				ok( 'IMG' === this.nodeName, 'is image' );
-
-				notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
-
-				start();
-			};
-
-			function reset_image_urls()
-			{
-				// cache buster
+			function reset_images(){
 				var t = (new Date).getTime();
-
-				var icnt = the_images.length;
-
-				for (var i=0; i<icnt; i++)
-				{
-					the_images[i] = the_images[i].replace(/t=\d*/gi, 't=' + t);
-				}
-			}
-
-			function reset_dom_images()
-			{
 				$('#images').empty();
-
-				var icnt = the_images.length;
-
-				for (var i=0; i<icnt; i++)
-				{
+				for (var i=0; i<the_images.length; i++){
+					the_images[i] = the_images[i].replace(/t=\d*/gi, 't=' + t);
 					$('#images').append( '<img src="' + the_images[i] + '" alt=""/>' );
 				}
 			}
 
-			asyncTest('preload image array - default callback (all)', function()
-			{
-				reset_image_urls();
+			QUnit.assert.isArray = function( arr, message ) {
+				var result = '[object Array]' === Object.prototype.toString.apply(arr);
+				QUnit.push( result, arr, '[object Array]', message );
+			};
 
-				$.imgpreload( the_images, all_callback );
+			// tests will intentionally use bad image urls simply to test invoked callbacks
+
+			QUnit.asyncTest('use image string', function(assert){
+				assert.expect(2);
+				$.imgpreload( 'foo', {each:function(){
+					assert.ok( true, 'each callback invoked' );
+				}, all: function() {
+					assert.ok( true, 'all callback invoked' );
+					QUnit.start();
+				}});
 			});
 
-			asyncTest('preload image array - { all: callback }', function()
-			{
-				reset_image_urls();
-
-				$.imgpreload( the_images, { all: all_callback } );
+			QUnit.asyncTest('use images array', function(assert){
+				assert.expect(3);
+				$.imgpreload( ['foo', 'bar'], {each:function(){
+					assert.ok( true, 'each callback invoked ' );
+				}, all: function() {
+					assert.equal( this.length, 2, '2 images in the array' );
+					QUnit.start();
+				}});
 			});
 
-			asyncTest('preload image array - { each: callback }', function()
-			{
-				reset_image_urls();
-
-				each_cnt = 0;
-
-				$.imgpreload( the_images, { each: each_callback } );
-			});
-
-			asyncTest('preload image array - { all: callback, each: callback }', function()
-			{
-				reset_image_urls();
-
-				each_cnt = 0;
-
-				$.imgpreload( the_images, { all: all_callback, each: each_callback } );
-			});
-
-			asyncTest('preload image single url - default callback (all)', function()
-			{
-				reset_image_urls();
-
-				$.imgpreload( the_images[0], all_callback_single );
-			});
-
-			asyncTest('preload image single url - { all: callback }', function()
-			{
-				reset_image_urls();
-
-				$.imgpreload( the_images[0], { all: all_callback_single } );
-			});
-
-			asyncTest('preload image single url - { each: callback }', function()
-			{
-				reset_image_urls();
-
-				each_cnt = 0;
-
-				$.imgpreload( the_images[0], { each: each_callback_single } );
-			});
-
-			asyncTest('preload image single url - { all: callback, each: callback }', function()
-			{
-				reset_image_urls();
-
-				each_cnt = 0;
-
-				$.imgpreload( the_images[0], { all: all_callback_single, each: each_callback_single } );
-			});
-
-			asyncTest('preload image single url (error) - default callback (all)', function()
-			{
-				reset_image_urls();
-
-				$.imgpreload( the_images[2], all_callback_single_error );
-			});
-
-			asyncTest('preload image single url (error) - { all: callback }', function()
-			{
-				reset_image_urls();
-
-				$.imgpreload( the_images[2], { all: all_callback_single_error } );
-			});
-
-			asyncTest('preload image single url (error) - { each: callback }', function()
-			{
-				reset_image_urls();
-
-				each_cnt = 0;
-
-				$.imgpreload( the_images[2], { each: each_callback_single } );
-			});
-
-			asyncTest('preload image single url (error) - { all: callback, each: callback }', function()
-			{
-				reset_image_urls();
-
-				each_cnt = 0;
-
-				$.imgpreload( the_images[2], { all: all_callback_single_error, each: each_callback_single } );
-			});
-
-			asyncTest('preload image elements - default callback (all)', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img').imgpreload( all_callback );
-			});
-
-			asyncTest('preload image elements - { all: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img').imgpreload( { all: all_callback } );
-			});
-
-			asyncTest('preload image elements - { each: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				each_cnt = 0;
-
-				$('#images img').imgpreload( { each: each_callback } );
-			});
-
-			asyncTest('preload image elements - { all: callback, each: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				each_cnt = 0;
-
-				$('#images img').imgpreload( { all: all_callback, each: each_callback } );
-			});
-
-			asyncTest('preload image single element - default callback (all)', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img:eq(0)').imgpreload( all_callback_single );
-			});
-
-			asyncTest('preload image single element - { all: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img:eq(0)').imgpreload( { all: all_callback_single } );
-			});
-
-			asyncTest('preload image single element - { each: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				each_cnt = 0;
-
-				$('#images img:eq(0)').imgpreload( { each: each_callback_single } );
-			});
-
-			asyncTest('preload image single element - { all: callback, each: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				each_cnt = 0;
-
-				$('#images img:eq(0)').imgpreload( { all: all_callback_single, each: each_callback_single } );
-			});
-
-			asyncTest('preload image single element (error) - default callback (all)', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img:eq(2)').imgpreload( all_callback_single_error );
-			});
-
-			asyncTest('preload image single element (error) - { all: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img:eq(2)').imgpreload( { all: all_callback_single_error } );
-			});
-
-			asyncTest('preload image single element (error) - { each: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				each_cnt = 0;
-
-				$('#images img:eq(2)').imgpreload( { each: each_callback_single } );
-			});
-
-			asyncTest('preload image single element (error) - { all: callback, each: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				each_cnt = 0;
-
-				$('#images img:eq(2)').imgpreload( { all: all_callback_single_error, each: each_callback_single } );
-			});
-
-			function reset_dom_divs()
-			{
-				$('#background-images').empty();
-
-				var icnt = the_images.length;
-
-				for (var i=0; i<icnt; i++)
-				{
-					$('#background-images').append( '<div style="background-image:url(' + the_images[i] + ')"></div>' );
-				}
-			}
-
-
-			asyncTest('preload background image elements - { all: callback, each: callback }', function()
-			{
-				reset_image_urls();
-
-				reset_dom_divs();
-
-				each_cnt = 0;
-
-				$('#background-images div').imgpreload( {
-					all: all_callback
-					, each: function(){
-						ok( true, 'each callback called' );
-
-						ok( 'DIV' === this.nodeName, 'is div' );
-
-						notStrictEqual( $(this).data( 'loaded' ), '', 'loaded data prop set' );
-
-						if ( ++each_cnt >= the_images.length )
-						{
-							start();
-						}
-					}
+			QUnit.asyncTest('default all callback', function(assert){
+				assert.expect(2);
+				$.imgpreload( ['foo', 'bar'], function() {
+					assert.ok( true, 'all callback invoked' );
+					assert.equal( this.length, 2, '2 images in the array' );
+					QUnit.start();
 				});
 			});
 
-			asyncTest('callback firing order', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				var firing_order = null;
-
-				$('#images img:eq(0)').imgpreload
-				({
-					each: function()
-					{
-						ok( null == firing_order, 'firing_order == null' );
-
-						ok( firing_order != 'all', 'each callback called before all callback' );
-
-						firing_order = 'each';
-
-						start();
-					},
-					all: function()
-					{
-						ok( firing_order == 'each', 'all callback called after each callback' );
-
-						firing_order = 'all';
-
-						start();
-					}
+			QUnit.asyncTest('load and error events', function(assert){
+				assert.expect(5);
+				$.imgpreload( 'foo', function(){
+					assert.equal(typeof $.data( this[0], 'events' ).randEvent, "undefined", "check undefined event");
+					assert.equal(typeof $.data( this[0], 'events' ).load, "object", "load event is set");
+					assert.equal(typeof $.data( this[0], 'events' ).error, "object", "error event is set");
+					assert.equal( this[0].nodeName, 'IMG', 'is an image object' );
+					setTimeout(function(){
+						assert.equal( typeof this[0], 'undefined', 'image object removed' );
+						QUnit.start();
+					}, 25);
 				});
 			});
 
-			asyncTest('test return img object', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img:eq(0)').imgpreload
-				({
-					each: function()
-					{
-						$(this).addClass('img-loaded');
-
-						start();
-					},
-					all: function()
-					{
-						ok( $('#images img:eq(0)').hasClass('img-loaded'), 'has "img-loaded" class' );
-
-						start();
-					}
-				});
-			});
-
-			asyncTest('each callback with "loaded" arg', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				each_cnt = 0;
-
+			QUnit.asyncTest('each and all callbacks', function(assert){
+				reset_images();
+				var each_cnt = 0, invoked = [];
 				$('#images img').imgpreload({
-					each: function( loaded ){
-						equal( loaded.length, ++each_cnt, 'number of images loaded' );
-						if ( each_cnt >= the_images.length ) {
-							start();
+					each: function(loaded){
+						each_cnt++;
+
+						invoked.push('each');
+
+						assert.ok( true, 'each callback' );
+
+						assert.equal( this.nodeName, 'IMG', 'is an image object' );
+
+						assert.equal( typeof $(this).data( 'loaded' ), "boolean", 'data-loaded is boolean' );
+
+						if (1 == each_cnt) {
+							// failing image is called first
+							assert.strictEqual( $(this).data( 'loaded' ), false, 'data-loaded === false');
+						} else {
+							assert.strictEqual( $(this).data( 'loaded' ), true, 'data-loaded === true');
 						}
+
+						assert.isArray( loaded, 'loaded is an array' );
+
+						assert.equal( loaded.length, each_cnt, 'correct number of images in the array' );
+					},
+					all: function (){
+						invoked.push('all');
+
+						assert.ok( true, 'all callback' );
+
+						assert.ok( '[object Array]' === Object.prototype.toString.apply(this), '"this" is an array' );
+
+						assert.equal( this.length, 2, '2 images in the array' );
+
+						var success_cnt = fail_cnt = 0;
+						for(var i=0; i < this.length; i++) {
+							if($(this[i]).data('loaded')) {
+								success_cnt++;
+							} else {
+								fail_cnt++;
+							}
+						}
+
+						assert.equal( success_cnt, 1, '1 image that loaded' );
+
+						assert.equal( fail_cnt, 1, '1 image that failed' );
+
+						assert.equal( each_cnt, 2, 'each callback invoked 2 times' );
+
+						assert.equal( invoked.length, 3, 'callbacks invoked 3 times' );
+
+						assert.equal( invoked[2], 'all', 'all callback invoked last' );
+
+						QUnit.start();
 					}
 				});
 			});
 
-			asyncTest('each callback with bad image url', function()
-			{
-				reset_image_urls();
-
-				reset_dom_images();
-
-				$('#images img:eq(2)').imgpreload({
+			QUnit.asyncTest('each and all callbacks with bad image url', function(assert){
+				reset_images();
+				assert.expect(2);
+				$('#images img:eq(1)').imgpreload({
 					each: function(){
-						equal( $(this).data('loaded'), false, 'loaded == false' );
-						start();
+						assert.strictEqual( $(this).data('loaded'), false, 'data-loaded === false' );
+					},
+					all: function(){
+						assert.strictEqual( $(this[0]).data('loaded'), false, 'data-loaded === false' );
+						QUnit.start();
+					}
+				});
+			});
+
+			QUnit.asyncTest('element background images', function(assert){
+				assert.expect(3);
+				var images = ['foo', 'bar'];
+				for (var i=0; i<images.length; i++) {
+					$( '<div style="background-image:url(' + images[i] + ')"></div>' ).appendTo(fixture_el);
+				}
+				$('div', fixture_el).imgpreload({
+					each:function(){
+						assert.ok( true, 'each callback invoked ' );
+					},
+					all: function() {
+						assert.equal( this.length, 2, '2 images in the array' );
+						QUnit.start();
+					}
+				});
+			});
+
+			QUnit.test('jquery object return', function(assert){
+				reset_images();
+				$('#images img').imgpreload().addClass('foo');
+				assert.equal($('#images img.foo').length, 2, 'number of elements' );
+			});
+
+			QUnit.test('default settings', function(assert){
+				assert.strictEqual($.fn.imgpreload.defaults.each, null, 'each callback is defined');
+				assert.strictEqual($.fn.imgpreload.defaults.all, null, 'all callback is defined');
+			});
+
+			// Exposing Test Results to the Sauce Labs API
+			// https://github.com/axemclion/grunt-saucelabs#test-result-details-with-qunit
+
+			var log = [];
+			var testName;
+
+			QUnit.done(function (test_results) {
+				var tests = [];
+				for(var i = 0, len = log.length; i < len; i++) {
+					var details = log[i];
+					tests.push({
+						name: details.name,
+						result: details.result,
+						expected: details.expected,
+						actual: details.actual,
+						source: details.source
+					});
+				}
+				test_results.tests = tests;
+				window.global_test_results = test_results;
+			});
+
+			QUnit.testStart(function(testDetails){
+				QUnit.log(function(details){
+					if (!details.result) {
+						details.name = testDetails.name;
+						log.push(details);
 					}
 				});
 			});
 		});
-
 	</script>
-
 </head>
 <body>
-
-	<h1 id="qunit-header">jquery.imgpreload</h1>
-
-	<h2 id="qunit-banner"></h2>
-
-	<div id="qunit-testrunner-toolbar"></div>
-
-	<h2 id="qunit-userAgent"></h2>
-
-	<ol id="qunit-tests"></ol>
-
+	<div id="qunit"></div>
 	<div id="qunit-fixture"></div>
-
 	<div id="images" style="display:none;"></div>
-	<div id="background-images" style="display:none;"></div>
-
 </body>
 </html>
