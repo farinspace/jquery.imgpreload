@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="qunit/qunit/qunit.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="qunit/qunit/qunit.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
-	<script type="text/javascript" src="../jquery.imgpreload.js"></script>
+	<script type="text/javascript" src="../dist/jquery.imgpreload.min.js"></script>
 	<script type="text/javascript">
 		jQuery(function($)
 		{
@@ -25,7 +25,6 @@
 					the_images[i] = the_images[i].replace(/t=\d*/gi, 't=' + t);
 					$('#images').append( '<img src="' + the_images[i] + '" alt=""/>' );
 				}
-				console.log('test');
 			}
 
 			QUnit.assert.isArray = function( arr, message ) {
@@ -177,6 +176,37 @@
 			QUnit.test('default settings', function(assert){
 				assert.strictEqual($.fn.imgpreload.defaults.each, null, 'each callback is defined');
 				assert.strictEqual($.fn.imgpreload.defaults.all, null, 'all callback is defined');
+			});
+
+			// Exposing Test Results to the Sauce Labs API
+			// https://github.com/axemclion/grunt-saucelabs#test-result-details-with-qunit
+
+			var log = [];
+			var testName;
+
+			QUnit.done(function (test_results) {
+				var tests = [];
+				for(var i = 0, len = log.length; i < len; i++) {
+					var details = log[i];
+					tests.push({
+						name: details.name,
+						result: details.result,
+						expected: details.expected,
+						actual: details.actual,
+						source: details.source
+					});
+				}
+				test_results.tests = tests;
+				window.global_test_results = test_results;
+			});
+
+			QUnit.testStart(function(testDetails){
+				QUnit.log(function(details){
+					if (!details.result) {
+						details.name = testDetails.name;
+						log.push(details);
+					}
+				});
 			});
 		});
 	</script>

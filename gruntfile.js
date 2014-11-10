@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 			'* License <%= pkg.licenses[0].type %> <<%= pkg.licenses[0].url %>>\n' +
 			'*/\n'
 	});
-	// build
+	// build (default)
 	grunt.config.merge({
 		jshint: {
 			dist: ['gruntfile.js', '<%= pkg.name %>.js']
@@ -56,30 +56,71 @@ module.exports = function(grunt) {
 		connect: {
 			server: {
 				options: {
-					base: "",
-					port: 9999
+					hostname: "localhost"
 				}
 			}
 		},
 		'saucelabs-qunit': {
-			all: {
+			test: {
 				options: {
-					urls: ["http://127.0.0.1:9999/test/index.html"],
-					tunnelTimeout: 5,
-					build: process.env.TRAVIS_JOB_ID,
-					concurrency: 3,
+					urls: ["http://localhost:8000/test/index.html"],
+					build: 'v<%= pkg.version %>',
+					sauceConfig: { // seconds
+						'max-duration': 90
+					},
 					browsers: [
 						{
+							browserName: "safari",
+							platform: "OS X 10.9"
+						},
+						{
 							browserName: "firefox",
-							version: "19",
-							platform: "XP"
+							platform: "OS X 10.9"
 						},
 						{
 							browserName: "chrome",
-							platform: "XP"
+							platform: "OS X 10.9"
+						},
+						{
+							browserName: "firefox",
+							platform: "WIN8"
+						},
+						{
+							browserName: "chrome",
+							platform: "WIN8"
+						},
+						{
+							browserName: "internet explorer",
+							platform: "WIN8.1",
+							version: "11"
+						},
+						{
+							browserName: "internet explorer",
+							platform: "WIN8",
+							version: "10"
+						},
+						{
+							browserName: "internet explorer",
+							platform: "VISTA",
+							version: "9"
+						},
+						{
+							browserName: "internet explorer",
+							platform: "XP",
+							version: "8"
+						},
+						{
+							browserName: "internet explorer",
+							platform: "XP",
+							version: "7"
+						},
+						{
+							browserName: "internet explorer",
+							platform: "XP",
+							version: "6"
 						}
 					],
-					testname: "qunit tests",
+					testname: "imgpreload",
 					tags: ["master"]
 				}
 			}
@@ -88,5 +129,5 @@ module.exports = function(grunt) {
 	// tasks
 	grunt.registerTask("test", ["connect", "saucelabs-qunit"]);
 	grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
-	grunt.registerTask('default', ['watch']);
+	grunt.registerTask('default', ['build']);
 };
